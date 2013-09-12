@@ -52,6 +52,41 @@ int collatz_cycle(int curr, int cnt){
   return cnt;
 }
 
+
+
+
+// -------------
+// collatz_c_cycle
+// -------------
+
+int collatz_c_cycle(int curr, int* a, int str, int cnt)
+{
+  assert(curr>0);
+  cnt=1;
+  while(curr>1)
+  {
+    if(curr>=str && curr<str+500)
+      return cnt+a[curr-str]-1;
+    if(curr%2==0)
+    {
+      curr/=2;
+      ++cnt;
+    }
+    else
+    {
+      curr+=(curr>>1)+1;
+      cnt+=2;
+    }
+  }
+  if(curr<0)
+    cnt=1;
+  assert(cnt>0);
+  return cnt;
+}
+
+
+
+
 // ------------
 // collatz_eval
 // ------------
@@ -60,8 +95,12 @@ int collatz_eval (int i, int j) {
     assert(i > 0);
     assert(j > 0);
     int v = 1;
-    				//BEGINNING OF ADDITION TO collatz_eval
     int ctemp = 1;
+
+/*varfortestingthing*/
+    int str;
+/*varfortestingthing*/
+
     if(i<=j){			//i is lower bound, j upper
       if(i<(j/2))		//if i<(j/2); longest cycle found in [j/2, j] range
 	i=j/2;			//set lower bound to j/2
@@ -72,7 +111,32 @@ int collatz_eval (int i, int j) {
 	n=i/2;			//sets n to i/2
       j=i;			//set j to upper bound
       i=n;			//set i to lower bound (either j or i/2)
-    }    
+    } 
+
+
+    /*testingsomethingoutbro*/
+
+    if((j-i)>1000){
+      int a[500];
+      str=i;
+      for(int k=0; k<500; ++k){
+        ctemp=collatz_cycle(i,1);
+        a[k]=ctemp;
+        if(ctemp>v)
+          v=ctemp;
+        ++i;
+      }
+      for(int cnt=i; cnt<=j; ++cnt){
+        ctemp=collatz_c_cycle(cnt, a, str, 1);
+        if(ctemp>v)
+          v=ctemp;
+      }
+      return v;
+    }
+
+    /*testingthatthingdonebro*/
+
+   
     for(int ct=i; ct<=j; ++ct){
       ctemp=collatz_cycle(ct, 1);  //fetches cycle length of current number
       assert(ctemp>0);		//cycle length returned must be >= 1
