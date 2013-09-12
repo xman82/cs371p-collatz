@@ -49,7 +49,7 @@ int collatz_cycle(int curr)
   }
   if(curr<0)
   {
-    curr==1;
+    curr=1;
     cnt=1;
   }
   assert(curr==1);
@@ -82,7 +82,7 @@ int collatz_c_cycle(int curr, int* a, int str)
   }
   if(curr<0)
   {
-    curr==1;
+    curr=1;
     cnt=1;
   }
   assert(curr==1);
