@@ -23,11 +23,6 @@ bool collatz_read (std::istream& r, int& i, int& j) {
     assert(i > 0);
     assert(j > 0);
     return true;}
-// -------------
-// collatz_seek
-// -------------
-
-  
 
 
 // -------------
@@ -36,15 +31,18 @@ bool collatz_read (std::istream& r, int& i, int& j) {
 
 //gives cycle length assuming "current" is passed with "cnt" initialized to 1.
 
-int collatz_cycle(int curr, int cnt){
-  assert(curr>0);
-  assert(cnt>0);
-  while(curr>1){
-    if(curr%2==0){
+int collatz_cycle(int curr)
+{
+  int cnt=1;
+  while(curr>1)
+  {
+    if(curr%2==0)
+    {
       curr = curr/2;
       cnt++;
-      }
-    else{
+    }
+    else
+    {
       curr+=(curr>>1)+1;
       cnt+=2;
     }
@@ -52,20 +50,16 @@ int collatz_cycle(int curr, int cnt){
   return cnt;
 }
 
-
-
-
 // -------------
 // collatz_c_cycle
 // -------------
 
-int collatz_c_cycle(int curr, int* a, int str, int cnt)
+int collatz_c_cycle(int curr, int* a, int str)
 {
-  assert(curr>0);
-  cnt=1;
+  int cnt=1;
   while(curr>1)
   {
-    if(curr>=str && curr<str+500)
+    if(curr>=str && curr<str+2000)
       return cnt+a[curr-str]-1;
     if(curr%2==0)
     {
@@ -80,72 +74,62 @@ int collatz_c_cycle(int curr, int* a, int str, int cnt)
   }
   if(curr<0)
     cnt=1;
-  assert(cnt>0);
   return cnt;
 }
-
-
-
 
 // ------------
 // collatz_eval
 // ------------
 
 int collatz_eval (int i, int j) {
-    assert(i > 0);
-    assert(j > 0);
     int v = 1;
     int ctemp = 1;
-
-/*varfortestingthing*/
     int str;
-/*varfortestingthing*/
+    int n;
 
-    if(i<=j){			//i is lower bound, j upper
-      if(i<(j/2))		//if i<(j/2); longest cycle found in [j/2, j] range
-	i=j/2;			//set lower bound to j/2
+    if(i<j)
+    {			      //[i, j]
+      if(i<(j/2))		//if i<(j/2); lower bound changed
+	  i=j/2;
     }
-    else{			//j is lower bound, i upper
-      int n=j;			
-      if(j<(i/2))		//if j<(i/2), longest cycle in [i/2, i] range
-	n=i/2;			//sets n to i/2
-      j=i;			//set j to upper bound
-      i=n;			//set i to lower bound (either j or i/2)
-    } 
+    else
+    {			      //[j, i]
+      n=j;			//n substitute for lower bound
+      if(j<(i/2))		//if j<(i/2), lower bound changed 
+	  n=i/2;
+      j=i;			//[i, j]
+      i=n;
+    }
 
-
-    /*testingsomethingoutbro*/
-
-    if((j-i)>1000){
-      int a[500];
+    if((j-i)>5000)
+    {
+      int a[2000];
       str=i;
-      for(int k=0; k<500; ++k){
-        ctemp=collatz_cycle(i,1);
+      for(int k=0; k<2000; ++k)
+      {
+        ctemp=collatz_cycle(i);
         a[k]=ctemp;
         if(ctemp>v)
           v=ctemp;
         ++i;
       }
-      for(int cnt=i; cnt<=j; ++cnt){
-        ctemp=collatz_c_cycle(cnt, a, str, 1);
+      for(int cnt=i; cnt<=j; ++cnt)
+      {
+        ctemp=collatz_c_cycle(cnt, a, str);
         if(ctemp>v)
           v=ctemp;
       }
       return v;
     }
-
-    /*testingthatthingdonebro*/
-
    
-    for(int ct=i; ct<=j; ++ct){
-      ctemp=collatz_cycle(ct, 1);  //fetches cycle length of current number
-      assert(ctemp>0);		//cycle length returned must be >= 1
-      if(ctemp > v)		//if new cycle length fetched is higher
-	v=ctemp;		//becomes new v (longest cycle length)
+    for(int ct=i; ct<=j; ++ct)
+    {
+      ctemp=collatz_cycle(ct);  //fetches cycle length of current number
+      if(ctemp > v)		     //replace old max if new cycle length is greater
+        v=ctemp;
     }
-				//END OF ADDITION TO collat_eval
-    assert(v > 0);
-    return v;}
+    return v;
+}
 
 // -------------
 // collatz_print
